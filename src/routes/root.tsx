@@ -1,9 +1,14 @@
 import React from "react";
 import { Outlet, Link } from "react-router-dom";
+import { ConfigProvider, theme } from "antd";
 
 export default function Root() {
 	return (
-		<React.Fragment>
+		<ConfigProvider
+			theme={{
+				algorithm: theme.darkAlgorithm,
+			}}
+		>
 			<nav>
 				<ul>
 					<li>
@@ -15,6 +20,6 @@ export default function Root() {
 			<main>
 				<Outlet />
 			</main>
-		</React.Fragment>
+		</ConfigProvider>
 	);
 }

@@ -7,6 +7,7 @@ import Root from "./routes/root";
 import ErrorPage from "./error-page";
 import Tasks from "./routes/tasks";
 import Admin from "./routes/admin";
+import "./index.css";
 
 const router = createBrowserRouter([
 	{

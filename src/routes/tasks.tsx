@@ -1,7 +1,5 @@
 import type React from "react";
-import { Button, Form, Input, Select, Space } from "antd";
-
-const { Option } = Select;
+import { Button, Form, Input, InputNumber, Space } from "antd";
 
 const layout = {
 	labelCol: { span: 8 },
@@ -15,21 +13,6 @@ const tailLayout = {
 const Tasks: React.FC = () => {
 	const [form] = Form.useForm();
 
-	const onGenderChange = (value: string) => {
-		switch (value) {
-			case "male":
-				form.setFieldsValue({ note: "Hi, man!" });
-				break;
-			case "female":
-				form.setFieldsValue({ note: "Hi, lady!" });
-				break;
-			case "other":
-				form.setFieldsValue({ note: "Hi there!" });
-				break;
-			default:
-		}
-	};
-
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const onFinish = (values: any) => {
 		console.log(values);
@@ -37,10 +20,6 @@ const Tasks: React.FC = () => {
 
 	const onReset = () => {
 		form.resetFields();
-	};
-
-	const onFill = () => {
-		form.setFieldsValue({ note: "Hello world!", gender: "male" });
 	};
 
 	return (
@@ -51,38 +30,25 @@ const Tasks: React.FC = () => {
 			onFinish={onFinish}
 			style={{ maxWidth: 600 }}
 		>
-			<Form.Item name="note" label="Note" rules={[{ required: true }]}>
+			<Form.Item name="name" label="Unique Name" rules={[{ required: true }]}>
 				<Input />
 			</Form.Item>
-			<Form.Item name="gender" label="Gender" rules={[{ required: true }]}>
-				<Select
-					placeholder="Select a option and change input text above"
-					onChange={onGenderChange}
-					allowClear
-				>
-					<Option value="male">male</Option>
-					<Option value="female">female</Option>
-					<Option value="other">other</Option>
-				</Select>
-			</Form.Item>
 			<Form.Item
-				noStyle
-				shouldUpdate={(prevValues, currentValues) =>
-					prevValues.gender !== currentValues.gender
-				}
+				name="description"
+				label="Task Description"
+				rules={[{ required: true }]}
 			>
-				{({ getFieldValue }) =>
-					getFieldValue("gender") === "other" ? (
-						<Form.Item
-							name="customizeGender"
-							label="Customize Gender"
-							rules={[{ required: true }]}
-						>
-							<Input />
-						</Form.Item>
-					) : null
-				}
+				<Input.TextArea rows={4} />
 			</Form.Item>
+
+			<Form.Item
+				name="duration"
+				label="Duration (mins)"
+				rules={[{ required: true }]}
+			>
+				<InputNumber min={1} max={3600} />
+			</Form.Item>
+
 			<Form.Item {...tailLayout}>
 				<Space>
 					<Button type="primary" htmlType="submit">
@@ -90,9 +56,6 @@ const Tasks: React.FC = () => {
 					</Button>
 					<Button htmlType="button" onClick={onReset}>
 						Reset
-					</Button>
-					<Button type="link" htmlType="button" onClick={onFill}>
-						Fill form
 					</Button>
 				</Space>
 			</Form.Item>
