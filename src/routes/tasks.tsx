@@ -14,8 +14,17 @@ const Tasks: React.FC = () => {
 	const [form] = Form.useForm();
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
-	const onFinish = (values: any) => {
+	const onFinish = async (values: any) => {
 		console.log(values);
+
+		const endpoint = new URL("http://localhost:8000/api/tasks");
+
+		const res = await fetch(endpoint, {
+			method: "POST",
+			body: JSON.stringify(values),
+		});
+
+		console.log(`Status = ${res.status}`);
 	};
 
 	const onReset = () => {
