@@ -18,7 +18,7 @@ interface Task {
 	duration: number;
 }
 
-const Admin: React.FC = () => {
+const Monitor: React.FC = () => {
 	const [tasks, setTasks] = useState<DataType[]>([]);
 
 	useEffect(() => {
@@ -74,4 +74,4 @@ const Admin: React.FC = () => {
 	);
 };
 
-export default Admin;
+export default Monitor;

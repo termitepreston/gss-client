@@ -3,10 +3,10 @@ import ReactDOM from "react-dom/client";
 // import { App } from "./App.tsx";
 
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
-import Root from "./routes/root";
+import Root from "./routes/Root";
 import ErrorPage from "./error-page";
-import Tasks from "./routes/tasks";
-import Admin from "./routes/admin";
+import Scheduler from "./routes/Scheduler";
+import Monitor from "./routes/Monitor";
 import "./index.css";
 
 const router = createBrowserRouter([
@@ -18,11 +18,11 @@ const router = createBrowserRouter([
 			{
 				index: true,
 				path: "tasks",
-				element: <Tasks />,
+				element: <Scheduler />,
 			},
 			{
 				path: "admin",
-				element: <Admin />,
+				element: <Monitor />,
 			},
 		],
 	},

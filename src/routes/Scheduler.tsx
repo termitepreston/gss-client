@@ -27,7 +27,7 @@ interface Event {
 	duration: number;
 }
 
-const Tasks: React.FC = () => {
+const Scheduler: React.FC = () => {
 	const [form] = Form.useForm();
 
 	const [events, setEvents] = useState<Event[]>([]);
@@ -54,6 +54,8 @@ const Tasks: React.FC = () => {
 			const msg = JSON.parse(e.data);
 
 			console.log("msg = ", msg);
+
+			console.log("events = ", events);
 
 			if (msg.type !== "hello") {
 				setEvents([...events, msg]);
@@ -126,4 +128,4 @@ const Tasks: React.FC = () => {
 	);
 };
 
-export default Tasks;
+export default Scheduler;
