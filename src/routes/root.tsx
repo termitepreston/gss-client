@@ -1,19 +1,16 @@
-import React from "react";
 import { Outlet, Link } from "react-router-dom";
 import { ConfigProvider, theme } from "antd";
 
 export default function Root() {
 	return (
-		<ConfigProvider
-			theme={{
-				algorithm: theme.darkAlgorithm,
-			}}
-		>
+		<ConfigProvider>
 			<nav>
 				<ul>
 					<li>
-						<Link to="/tasks">Task</Link>
-						<Link to="/admin">Admin Board</Link>
+						<Link to="/tasks">Schedule A Task</Link>
+					</li>
+					<li>
+						<Link to="/admin">View All Tasks</Link>
 					</li>
 				</ul>
 			</nav>
