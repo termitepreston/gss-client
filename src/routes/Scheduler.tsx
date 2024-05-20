@@ -8,29 +8,29 @@ import {
 	Flex,
 	List,
 	Avatar,
-	Divider,
+	Typography,
 } from "antd";
-import { useState } from "react";
+import type { UpdateMsg } from "../App";
+
+const { Link, Paragraph } = Typography;
 
 const layout = {
 	labelCol: { span: 8 },
 	wrapperCol: { span: 16 },
 };
 
-const tailLayout = {
-	wrapperCol: { offset: 8, span: 16 },
-};
-
-interface Event {
-	name: string;
-	description: string;
-	duration: number;
+interface SchedulerProps {
+	wsId: string;
+	wsReady: boolean;
+	wsMsg: UpdateMsg[];
 }
 
-const Scheduler: React.FC = () => {
+const Scheduler: React.FC<SchedulerProps> = ({
+	wsId,
+	wsMsg,
+	wsReady,
+}: SchedulerProps) => {
 	const [form] = Form.useForm();
-
-	const [events, setEvents] = useState<Event[]>([]);
 
 	// biome-ignore lint/suspicious/noExplicitAny: <explanation>
 	const onFinish = async (values: any) => {
@@ -38,32 +38,12 @@ const Scheduler: React.FC = () => {
 
 		const res = await fetch("/api/tasks", {
 			method: "POST",
-			body: JSON.stringify(values),
+			body: JSON.stringify({ ...values, name: wsId }),
 		});
 
-		console.log(`Opening websocket connection. Status is ${res.status}`);
+		console.log(res.status);
 
-		const ws = new WebSocket("ws://localhost:8000/update");
-
-		ws.onopen = () => {
-			console.log("ws opened!");
-
-			ws.send(JSON.stringify({ type: "hello", name: values.name }));
-		};
-		ws.onmessage = (e) => {
-			const msg = JSON.parse(e.data);
-
-			console.log("msg = ", msg);
-
-			console.log("events = ", events);
-
-			if (msg.type !== "hello") {
-				setEvents([...events, msg]);
-			}
-		};
-		ws.onclose = () => {
-			console.log("ws closed.");
-		};
+		form.resetFields();
 	};
 
 	const onReset = () => {
@@ -71,48 +51,53 @@ const Scheduler: React.FC = () => {
 	};
 
 	return (
-		<Flex>
-			<Form
-				{...layout}
-				form={form}
-				name="control-hooks"
-				onFinish={onFinish}
-				layout="vertical"
-				style={{ maxWidth: 600 }}
-			>
-				<Form.Item name="name" label="Unique Name" rules={[{ required: true }]}>
-					<Input />
-				</Form.Item>
-				<Form.Item
-					name="description"
-					label="Task Description"
-					rules={[{ required: true }]}
+		<Flex vertical>
+			<Flex vertical>
+				<Paragraph>
+					{wsReady
+						? "Websocket connection established."
+						: "Waiting for WS connection"}
+				</Paragraph>
+				<Paragraph>Unique connection identifier: {wsId}</Paragraph>
+			</Flex>
+			<Flex>
+				<Form
+					{...layout}
+					form={form}
+					name="control-hooks"
+					onFinish={onFinish}
+					layout="vertical"
+					style={{ maxWidth: 600, flexGrow: 1 }}
 				>
-					<Input.TextArea rows={4} />
-				</Form.Item>
-				<Form.Item
-					name="duration"
-					label="Duration (mins)"
-					rules={[{ required: true }]}
-				>
-					<InputNumber min={1} max={3600} />
-				</Form.Item>
-				<Form.Item>
-					<Space>
-						<Button type="primary" htmlType="submit">
-							Submit
-						</Button>
-						<Button htmlType="button" onClick={onReset}>
-							Reset
-						</Button>
-					</Space>
-				</Form.Item>
-			</Form>
-			<Divider type="vertical" />
-			<div>
+					<Form.Item
+						name="description"
+						label="Task Description"
+						rules={[{ required: true }]}
+					>
+						<Input.TextArea rows={4} />
+					</Form.Item>
+					<Form.Item
+						name="duration"
+						label="Duration (mins)"
+						rules={[{ required: true }]}
+					>
+						<InputNumber min={1} max={3600} />
+					</Form.Item>
+					<Form.Item>
+						<Space>
+							<Button type="primary" htmlType="submit">
+								Submit
+							</Button>
+							<Button htmlType="button" onClick={onReset}>
+								Reset
+							</Button>
+						</Space>
+					</Form.Item>
+				</Form>
 				<List
 					itemLayout="horizontal"
-					dataSource={events}
+					dataSource={wsMsg}
+					style={{ flexGrow: 1 }}
 					renderItem={(item) => (
 						<List.Item>
 							<List.Item.Meta
@@ -123,7 +108,7 @@ const Scheduler: React.FC = () => {
 						</List.Item>
 					)}
 				/>
-			</div>
+			</Flex>
 		</Flex>
 	);
 };
